@@ -7,7 +7,7 @@ env:
 steps:
   - type: Command
     command: |
-      . ./env.sh
+      . action/setEnvVar.sh
+      cd terraform
       terraform init
       terraform apply --auto-approve
-
