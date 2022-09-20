@@ -1,32 +1,23 @@
-resource "oci_events_rule" "opensearch_rule" {
-  #Required
+resource "oci_objectstorage_bucket" "opensearch_bucket" {
+  compartment_id = var.compartment_ocid
+  namespace      = local.ocir_namespace
+  name           = "opensearch-bucket"
+  access_type    = "NoPublicAccess"
+}
+
+resource oci_events_rule opensearch_rule {
   actions {
-    #Required
     actions {
-      #Required
-      action_type = "ONS"
-      is_enabled  = true
-
-      #Optional
-      description = "description"
-      # topic_id    = oci_ons_notification_topic.test_notification_topic.id
-    }
-
-    actions {
-      #Required
       action_type = "OSS"
-      is_enabled  = true
-
-      #Optional
-      description = "description"
-      stream_id   = oci_streaming_stream.opensearch_stream.id
+      is_enabled = "true"
+      stream_id  = oci_streaming_stream.opensearch_stream.id
     }
   }
-
   compartment_id = var.compartment_ocid
-  condition      = "{\"eventType\": \"com.oraclecloud.dbaas.autonomous.database.backup.end\"}"
-  display_name   = "This rule sends a notification upon completion of DbaaS backup"
-  is_enabled     = true
+  condition      = "{\"eventType\":[\"com.oraclecloud.objectstorage.createobject\",\"com.oraclecloud.objectstorage.deleteobject\",\"com.oraclecloud.objectstorage.updateobject\"],\"data\":{\"additionalDetails\":{\"bucketName\":[\"opensearch-bucket\"]}}}"
+  #description = <<Optional value not found in discovery>>
+  display_name = "opensearch-input-rule"
+  is_enabled = "true"
 }
 
 data "oci_events_rules" "opensearch_rules" {
