@@ -8,9 +8,6 @@ env:
 steps:
   - type: Command
     command: |
-      export OCI_USER=$(oci secrets secret-bundle get --secret-id $TF_VAR_oci_user --query "data.\"secret-bundle-content\".content" | tr -d '"' | base64 -d)
-      export OCI_TOKEN=$(oci secrets secret-bundle get --secret-id $TF_VAR_oci_token --query "data.\"secret-bundle-content\".content" | tr -d '"' | base64 -d)
       . action/setEnvVar.sh
-      action/functions.sh
       action/terraform.sh
       
