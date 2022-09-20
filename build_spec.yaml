@@ -4,10 +4,22 @@ timeoutInSeconds: 5000
 shell: bash
 env:
   exportedVariables:
+  vaultVariables:
+    OCIR_DOCKER_PWD: "YOUR-SECRET-OCID"
+    OCIR_DOCKER_USER: "YOUR-SECRET-OCID"
+ 
 steps:
+  - type: Command                   
+    name: "Login to OCIR"  
+    shell: bash                    
+    timeoutInSeconds: 60           
+    runAs: root          
+    command: |
+      # do docker login
+      echo ${OCIR_DOCKER_PWD} | docker login iad.ocir.io -u ${OCIR_DOCKER_USER} --password-stdin
+
   - type: Command
     command: |
       . action/setEnvVar.sh
-      cd terraform
-      terraform init
-      terraform apply --auto-approve
+      . action/terraform.sh
+      

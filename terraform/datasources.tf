@@ -6,19 +6,8 @@ data "oci_identity_availability_domains" "ADs" {
 }
 
 # Gets home and current regions
-
 data "oci_identity_tenancy" "tenant_details" {
   tenancy_id = var.tenancy_ocid
-  provider   = oci.current_region
-}
-
-data "oci_identity_regions" "home_region" {
-  filter {
-    name   = "key"
-    values = [data.oci_identity_tenancy.tenant_details.home_region_key]
-  }
-
-  provider = oci.current_region
 }
 
 data "oci_identity_regions" "current_region" {
@@ -26,7 +15,6 @@ data "oci_identity_regions" "current_region" {
     name   = "name"
     values = [var.region]
   }
-  provider = oci.current_region
 }
 
 # Randoms
@@ -37,19 +25,12 @@ resource "random_string" "id" {
 
 # Gets a list of supported images based on the shape, operating_system and operating_system_version provided
 data "oci_core_images" "node_pool_images" {
-  compartment_id           = local.oke_compartment_id
-  operating_system         = var.image_operating_system
-  operating_system_version = var.image_operating_system_version
-  shape                    = var.node_pool_shape
+  compartment_id           = var.compartment_ocid
+  operating_system         = "Oracle Linux"
+  operating_system_version = "7.9"
+  shape                    = "VM.Standard.E4.Flex"
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
-}
-
-data "oci_containerengine_cluster_option" "oke" {
-  cluster_option_id = "all"
-}
-data "oci_containerengine_node_pool_option" "oke" {
-  node_pool_option_id = "all"
 }
 
 # OCI Services
@@ -59,22 +40,13 @@ data "oci_core_services" "all_services" {
     name   = "name"
     values = ["All .* Services In Oracle Services Network"]
     regex  = true
+
+
   }
 }
 
 ## Object Storage
 data "oci_objectstorage_namespace" "ns" {
-  compartment_id = local.oke_compartment_id
-}
-
-# Gets kubeconfig
-data "oci_containerengine_cluster_kube_config" "oke_cluster_kube_config" {
-  cluster_id = var.create_new_oke_cluster ? module.oci-oke[0].cluster.id : var.existent_oke_cluster_id
-}
-
-
-data "oci_load_balancer_load_balancers" "LBs" {
   compartment_id = var.compartment_ocid
-  depends_on = [oci_devops_build_run.test_build_run_1]
-
 }
+
