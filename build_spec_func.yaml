@@ -1,0 +1,26 @@
+version: 0.1
+component: build
+timeoutInSeconds: 6000
+runAs: root
+shell: bash
+env:
+
+steps:
+  - type: Command
+    name: "Function Build Default Image"
+    timeoutInSeconds: 6000
+    command: |
+      cd tika_parser
+      fn build  --verbose
+      echo "
+      `docker images`
+      "
+      
+outputArtifacts:
+  - name: output_fn_default_image
+    type: DOCKER_IMAGE
+    # this is only the locally exported container image name
+    # this location tag doesn't effect the tag used to deliver the container image
+    # to the Container Registry.
+    location: tikaparser:0.0.0  
+  
