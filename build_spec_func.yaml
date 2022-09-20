@@ -4,8 +4,17 @@ timeoutInSeconds: 6000
 runAs: root
 shell: bash
 env:
+  exportedVariables:
+    - BUILDRUN_HASH
 
 steps:
+  - type: Command
+    name: "Define unique image tag"
+    timeoutInSeconds: 140
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
+
   - type: Command
     name: "Function Build Default Image"
     timeoutInSeconds: 6000

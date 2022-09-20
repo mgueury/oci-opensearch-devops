@@ -17,11 +17,13 @@ resource "oci_functions_application" "opensearch_application" {
   }
 }
 
+variable function_image_uri {}
+
 resource "oci_functions_function" "tika_function" {
   #Required
   application_id = oci_functions_application.opensearch_application.id
   display_name   = "tika-function"
-  image          = var.function_image
+  image          = var.function_image_uri
   memory_in_mbs  = "128"
 
   #Optional

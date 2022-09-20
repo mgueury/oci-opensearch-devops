@@ -1,4 +1,4 @@
 . $HOME/bin/env_terraform_appdev.sh
 export TF_VAR_compartment_ocid=ocid1.compartment.oc1..aaaaaaaa4vqn4n4z2qybg6waq6ve75tdxrkz4ibvknectgzbk3ujbxcsbsfq
 export TF_VAR_ocir_docker_repository=fra.ocir.io
-export TF_VAR_function_image=$TF_VAR_ocir_docker_repository/$TF_VAR_namespace/tikaparser:0.0.54
+export TF_VAR_function_image_uri=$TF_VAR_ocir_docker_repository/$TF_VAR_namespace/tikaparser:0.0.54
